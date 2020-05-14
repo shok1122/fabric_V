@@ -1,2 +1,5 @@
+assets/*
+log/*
+channel-artifacts/*
 *.yaml
 !.gitkeep
