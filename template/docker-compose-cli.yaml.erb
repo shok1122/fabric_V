@@ -1,0 +1,100 @@
+# Copyright IBM Corp. All Rights Reserved1
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+version: '2'
+
+volumes:
+  orderer.<%=DOMAIN%>:
+<%- org_num_total.times do |i| -%>
+<%-
+  org_num = "%03d" % i
+-%>
+  peer0.org<%=org_num%>.<%=DOMAIN%>:
+  peer1.org<%=org_num%>.<%=DOMAIN%>:
+<%- end -%>
+
+networks:
+  <%=DOMAIN%>:
+
+services:
+
+  orderer.<%=DOMAIN%>:
+    extends:
+      file:   base/docker-compose-base-1.yaml
+      service: orderer.<%=DOMAIN%>
+    container_name: orderer.<%=DOMAIN%>
+    networks:
+      - <%=DOMAIN%>
+
+<%- org_num_total.times do |i| -%>
+<%-
+  org_num = "%03d" % i
+-%>
+  # -------------------------------------
+  # org<%=org_num%>
+  # -------------------------------------
+  # peer0
+  peer0.org<%=org_num%>.<%=DOMAIN%>:
+    container_name: peer0.org<%=org_num%>.<%=DOMAIN%>
+    extends:
+      file:  base/docker-compose-base-1.yaml
+      service: peer0.org<%=org_num%>.<%=DOMAIN%>
+    networks:
+      - <%=DOMAIN%>
+  # peer1
+  peer1.org<%=org_num%>.<%=DOMAIN%>:
+    container_name: peer1.org<%=org_num%>.<%=DOMAIN%>
+    extends:
+      file:  base/docker-compose-base-1.yaml
+      service: peer1.org<%=org_num%>.<%=DOMAIN%>
+    networks:
+      - <%=DOMAIN%>
+<%- end -%>
+
+  cli.<%=DOMAIN%>:
+    container_name: cli
+    image: hyperledger/fabric-tools:$IMAGE_TAG
+    tty: true
+    stdin_open: true
+    environment:
+      - SYS_CHANNEL=$SYS_CHANNEL
+      - GOPATH=/opt/gopath
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - FABRIC_LOGGING_SPEC=DEBUG
+      #- FABRIC_LOGGING_SPEC=INFO
+      - CORE_VM_DOCKER_ATTACHSTDOUT=true
+      - CORE_PEER_ID=cli
+      - CORE_PEER_ADDRESS=peer0.org000.<%=DOMAIN%>:10051
+      - CORE_PEER_LOCALMSPID=Org000MSP
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_TLS_CERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org000.<%=DOMAIN%>/peers/peer0.org000.<%=DOMAIN%>/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org000.<%=DOMAIN%>/peers/peer0.org000.<%=DOMAIN%>/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org000.<%=DOMAIN%>/peers/peer0.org000.<%=DOMAIN%>/tls/ca.crt
+      - CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org000.<%=DOMAIN%>/users/Admin@org000.<%=DOMAIN%>/msp
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+    command: /bin/bash
+    volumes:
+      - /var/run/:/host/var/run/
+      - ./../chaincode/:/opt/gopath/src/github.com/chaincode
+      - ./crypto-config:/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/
+      - ./assets:/opt/gopath/src/github.com/hyperledger/fabric/peer/assets
+      - ./template:/opt/gopath/src/github.com/hyperledger/fabric/peer/template
+      - ./log:/opt/gopath/src/github.com/hyperledger/fabric/peer/log
+      - ./scripts:/opt/gopath/src/github.com/hyperledger/fabric/peer/scripts/
+      - ./channel-artifacts:/opt/gopath/src/github.com/hyperledger/fabric/peer/channel-artifacts
+      - ./org/:/var/mpki/org/
+      - ./policy/:/var/mpki/policy/
+    depends_on:
+      - orderer.<%=DOMAIN%>
+<%- org_num_total.times do |i| -%>
+<%-
+  org_num = "%03d" % i
+-%>
+      # <%=org_num%>
+      - peer0.org<%=org_num%>.<%=DOMAIN%>
+      - peer1.org<%=org_num%>.<%=DOMAIN%>
+<%- end -%>
+    networks:
+      - <%=DOMAIN%>
