@@ -15,6 +15,9 @@ PATH_PEER_ORGS = '/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peer
 PATH_ORDERER_ORGS = '/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations'
 
 DOMAIN = ARGV[0]
+ORG_NUM = ARGV[1].to_i
+ENDORSER_NUM = ARGV[2].to_i
+CHANNEL_NAME = ARGV[3]
 
 def setup_fabric(_org_num_total)
     org_num_total = _org_num_total
@@ -58,6 +61,7 @@ def generate(_org_num_total, _endorser_num)
         f.puts("FABRIC_ORG_NUM=#{org_list}")
         f.puts("FABRIC_PEER_NUM=0,1")
         f.puts("FABRIC_ENDORSER_NUM=#{_endorser_num}")
+        f.puts("FABRIC_CHANNEL_NAME=#{CHANNEL_NAME}")
         candidate_list = "001"
         2.upto (_org_num_total - 1) do |i|
             candidate_list = "#{candidate_list},#{"%03d" % i}"
@@ -104,7 +108,5 @@ if ARGV.size() < 3 then
 	exit
 end
 
-org_num = ARGV[1].to_i
-endorser_num = ARGV[2].to_i
-setup_fabric(org_num)
-generate(org_num, endorser_num)
+setup_fabric(ORG_NUM)
+generate(ORG_NUM, ENDORSER_NUM)
