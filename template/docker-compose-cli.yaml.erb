@@ -54,7 +54,7 @@ services:
 <%- end -%>
 
   cli.<%=DOMAIN%>:
-    container_name: cli
+    container_name: cli.<%=DOMAIN%>
     image: hyperledger/fabric-tools:$IMAGE_TAG
     tty: true
     stdin_open: true
