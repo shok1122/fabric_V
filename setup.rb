@@ -55,25 +55,25 @@ def generate(_org_num_total, _endorser_num)
         _org_num_total.times do |i|
             org_list = "#{org_list},#{"%03d" % i}" if 0 < i
         end
-        f.puts("MPKI_ORG_NUM=#{org_list}")
-        f.puts("MPKI_PEER_NUM=0,1")
-        f.puts("MPKI_ENDORSER_NUM=#{_endorser_num}")
+        f.puts("FABRIC_ORG_NUM=#{org_list}")
+        f.puts("FABRIC_PEER_NUM=0,1")
+        f.puts("FABRIC_ENDORSER_NUM=#{_endorser_num}")
         candidate_list = "001"
         2.upto (_org_num_total - 1) do |i|
             candidate_list = "#{candidate_list},#{"%03d" % i}"
         end
-        f.puts("MPKI_ENDORSER_CANDIDATE=#{candidate_list}")
+        f.puts("FABRIC_ENDORSER_CANDIDATE=#{candidate_list}")
         f.puts("# ------------------------------")
         f.puts("# orderer")
         f.puts("# ------------------------------")
         # CORE_PEER_LOCALMSPID
-        f.puts("MPKI_CORE_PEER_LOCALMSPID_ORDERER=OrdererMSP")
+        f.puts("FABRIC_CORE_PEER_LOCALMSPID_ORDERER=OrdererMSP")
         # CORE_PEER_TLS_ROOTCERT_FILE
-        f.puts("MPKI_CORE_PEER_TLS_ROOTCERT_FILE_ORDERER=#{PATH_ORDERER_ORGS}/#{DOMAIN}/orderers/orderer.#{DOMAIN}/msp/tlscacerts/tlsca.#{DOMAIN}-cert.pem")
+        f.puts("FABRIC_CORE_PEER_TLS_ROOTCERT_FILE_ORDERER=#{PATH_ORDERER_ORGS}/#{DOMAIN}/orderers/orderer.#{DOMAIN}/msp/tlscacerts/tlsca.#{DOMAIN}-cert.pem")
         # CORE_PEER_MSPCONFIGPATH
-        f.puts("MPKI_CORE_PEER_MSPCONFIGPATH_ORDERER=#{PATH_ORDERER_ORGS}/#{DOMAIN}/users/Admin@#{DOMAIN}/msp")
+        f.puts("FABRIC_CORE_PEER_MSPCONFIGPATH_ORDERER=#{PATH_ORDERER_ORGS}/#{DOMAIN}/users/Admin@#{DOMAIN}/msp")
         # CORE_PEER_ADDRESS
-        f.puts("MPKI_CORE_PEER_ADDRESS_ORDERER=orderer.#{DOMAIN}:7050")
+        f.puts("FABRIC_CORE_PEER_ADDRESS_ORDERER=orderer.#{DOMAIN}:7050")
         _org_num_total.times do |i|
             org_num = "%03d" % i
             f.puts("# ------------------------------")
@@ -82,19 +82,19 @@ def generate(_org_num_total, _endorser_num)
             # CORE_PEER_LOCALMSPID
             key = "peer0.org#{org_num}.#{DOMAIN}"
             tmp = access_container_env(key, 'CORE_PEER_LOCALMSPID')
-            f.puts("MPKI_CORE_PEER_LOCALMSPID_ORG#{org_num}=#{tmp.split("=")[1]}")
+            f.puts("FABRIC_CORE_PEER_LOCALMSPID_ORG#{org_num}=#{tmp.split("=")[1]}")
             # CORE_PEER_ADDRESS (peer0)
             key = "peer0.org#{org_num}.#{DOMAIN}"
             tmp = access_container_env(key, 'CORE_PEER_ADDRESS')
-            f.puts("MPKI_CORE_PEER_ADDRESS_PEER0_ORG#{org_num}=#{tmp.split("=")[1]}")
+            f.puts("FABRIC_CORE_PEER_ADDRESS_PEER0_ORG#{org_num}=#{tmp.split("=")[1]}")
             # CORE_PEER_ADDRESS (peer1)
             key = "peer1.org#{org_num}.#{DOMAIN}"
             tmp = access_container_env(key, 'CORE_PEER_ADDRESS')
-            f.puts("MPKI_CORE_PEER_ADDRESS_PEER1_ORG#{org_num}=#{tmp.split("=")[1]}")
+            f.puts("FABRIC_CORE_PEER_ADDRESS_PEER1_ORG#{org_num}=#{tmp.split("=")[1]}")
             # CORE_PEER_TLS_ROOTCERT_FILE
-            f.puts("MPKI_CORE_PEER_TLS_ROOTCERT_FILE_ORG#{org_num}=#{PATH_PEER_ORGS}/org#{org_num}.#{DOMAIN}/peers/peer0.org#{org_num}.#{DOMAIN}/tls/ca.crt")
+            f.puts("FABRIC_CORE_PEER_TLS_ROOTCERT_FILE_ORG#{org_num}=#{PATH_PEER_ORGS}/org#{org_num}.#{DOMAIN}/peers/peer0.org#{org_num}.#{DOMAIN}/tls/ca.crt")
             # CORE_PEER_MSPCONFIGPATH
-            f.puts("MPKI_CORE_PEER_MSPCONFIGPATH_ORG#{org_num}=#{PATH_PEER_ORGS}/org#{org_num}.#{DOMAIN}/users/Admin@org#{org_num}.#{DOMAIN}/msp")
+            f.puts("FABRIC_CORE_PEER_MSPCONFIGPATH_ORG#{org_num}=#{PATH_PEER_ORGS}/org#{org_num}.#{DOMAIN}/users/Admin@org#{org_num}.#{DOMAIN}/msp")
         end
     end
 end
