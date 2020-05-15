@@ -25,12 +25,12 @@ def setup_fabric(_org_num_total)
     end
     File.open(ERB_DOCKER_COMPOSE_CLI) do |f|
         parsed_text = ERB.new(f.read, nil, '%-').result(binding)
-        path_yaml = './docker-compose-cli-1.yaml'
+        path_yaml = './docker-compose-cli.yaml'
         File.write(path_yaml, parsed_text)
     end
     File.open(ERB_CRYPTO_CONFIG) do |f|
         parsed_text = ERB.new(f.read, nil, '%-').result(binding)
-        path_yaml = './crypto-config-1.yaml'
+        path_yaml = './crypto-config.yaml'
         File.write(path_yaml, parsed_text)
     end
     File.open(ERB_CONFIGTX) do |f|

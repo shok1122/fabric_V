@@ -353,7 +353,7 @@ function generateCerts() {
     rm -Rf crypto-config
   fi
   set -x
-  cryptogen generate --config=./crypto-config-1.yaml
+  cryptogen generate --config=./crypto-config.yaml
   res=$?
   set +x
   if [ $res -ne 0 ]; then
@@ -500,7 +500,7 @@ SYS_CHANNEL="byfn-sys-channel"
 # channel name defaults to "mychannel"
 CHANNEL_NAME="mychannel"
 # use this as the default docker-compose yaml definition
-COMPOSE_FILE=docker-compose-cli-1.yaml
+COMPOSE_FILE=docker-compose-cli.yaml
 #
 COMPOSE_FILE_COUCH=docker-compose-couch.yaml
 # org3 docker compose file
