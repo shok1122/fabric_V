@@ -1,0 +1,3 @@
+[submodule "chaincode/src/github.com/shok1122/fabric"]
+	path = chaincode/src/github.com/shok1122/fabric
+	url = https://github.com/shok1122/fabric.git
