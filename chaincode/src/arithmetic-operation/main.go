@@ -20,11 +20,10 @@ func (t *ArithmeticOperation) Invoke(stub shim.ChaincodeStubInterface) peer.Resp
 	var result string
 	var err error
 
-	switch fn
-	{
-	case 'set':
+	switch fn; {
+	case "set":
 		result, err = set(stub, args)
-	case 'get':
+	case "get":
 		result, err = get(stub, args)
 	default:
 		return shim.Error(fmt.Errorf("Incorrect function (name:%s)", fn))
