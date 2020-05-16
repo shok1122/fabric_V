@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"strconv"
 
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 	"github.com/hyperledger/fabric/protos/peer"
@@ -25,6 +26,8 @@ func (t *ArithmeticOperation) Invoke(stub shim.ChaincodeStubInterface) peer.Resp
 		result, err = set(stub, args)
 	case "get":
 		result, err = get(stub, args)
+	case "add":
+		result, err = add(stub, args)
 	default:
 		return shim.Error("Incorrect function (name:-)")
 	}
@@ -63,6 +66,43 @@ func get(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 	}
 
 	return string(val), nil
+}
+
+func add(stub shim.ChaincodeStubInterface, args[]string) (string, error) {
+
+	var i1, i2, i3 int
+	var err error
+	var val []byte
+
+	if len(args) != 2 {
+		return "", fmt.Errorf("Incorrect arguments")
+	}
+
+	val, err = stub.GetState(args[0])
+	if err != nil {
+		return "", fmt.Errorf("Failed to get (key:%s)", args[0])
+	}
+	if val == nil {
+		return "", fmt.Errorf("Asset not found (key:%s)", args[0])
+	}
+
+	i1, err = strconv.Atoi(string(val))
+	if err != nil {
+		return "", fmt.Errorf("Failed to convert to string (val:%+v)", val)
+	}
+
+	i2, err = strconv.Atoi(args[1])
+	if err != nil {
+		return "", fmt.Errorf("Failed to convert to string (val:%+v)", args[1])
+	}
+
+	i3 = i1 + i2
+	err = stub.PutState(args[0], []byte(strconv.Itoa(i3)))
+	if err != nil {
+		return "", fmt.Errorf("Failed to set asset (key:%v,value:%v)", args[0], i3)
+	}
+
+	return string(i3), nil
 }
 
 func main() {
