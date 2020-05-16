@@ -20,13 +20,17 @@ func (t *ArithmeticOperation) Invoke(stub shim.ChaincodeStubInterface) peer.Resp
 	var result string
 	var err error
 
-	switch fn; {
+	switch (fn) {
 	case "set":
 		result, err = set(stub, args)
 	case "get":
 		result, err = get(stub, args)
 	default:
-		return shim.Error(fmt.Errorf("Incorrect function (name:%s)", fn))
+		return shim.Error("Incorrect function (name:-)")
+	}
+
+	if err != nil {
+		return shim.Error(err.Error())
 	}
 
 	return shim.Success([]byte(result))
@@ -47,7 +51,7 @@ func set(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 
 func get(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 	if len(args) != 1 {
-		return "", fmt.Errof("Incorrect arguments")
+		return "", fmt.Errorf("Incorrect arguments")
 	}
 
 	val, err := stub.GetState(args[0])
