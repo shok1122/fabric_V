@@ -3,8 +3,8 @@ package main
 import (
 	"fmt"
 
-	"github.com/shok1122/fabric/core/chaincode/shim"
-	"github.com/shok1122/fabric/protos/peer"
+	"github.com/hyperledger/fabric/core/chaincode/shim"
+	"github.com/hyperledger/fabric/protos/peer"
 )
 
 type ArithmeticOperation struct {
