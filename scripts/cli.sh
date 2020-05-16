@@ -87,7 +87,7 @@ update_anchor_all()
 # Run channel command
 channel()
 {
-    cmd="$1"
+    local cmd="$1"
     shift
 
     case $cmd in
@@ -112,6 +112,56 @@ channel()
     esac
 }
 
+install_chaincode()
+{
+    local peer="$1"; local org="$2"
+    set_globals $peer $org
+
+    local path_cc="$3"
+    local name_cc="$(basename $path_cc)"
+
+    log "peer install chaincode"
+
+    peer chaincode install -n $name_cc -v 1.0 -p $path_cc -l golang
+}
+
+install_chaincode_all()
+{
+    local path_cc="$1"
+
+    for org in ${ORG_NUM_LIST//,/ }; do
+        for peer in ${PEER_NUM_LIST//,/ }; do
+            echo $peer $org
+            install_chaincode $peer $org $path_cc
+        done
+    done
+}
+
+chaincode()
+{
+    local cmd="$1"
+    shift
+
+    case $cmd in
+        install)
+            install_chaincode $@
+            ;;
+        install-all)
+            install_chaincode_all $@
+            ;;
+        *)
+            help
+            ;;
+    esac
+}
+
+playing()
+{
+    channel create
+    channel join-all
+    chaincode install-all github.com/chaincode/src/arithmetic-operation
+}
+
 CMD="$1"
 shift
 
@@ -119,7 +169,13 @@ case $CMD in
     channel)
         channel $@
         ;;
-    help|*)
+    chaincode)
+        chaincode $@
+        ;;
+    playing)
+        playing
+        ;;
+    *)
         help
         ;;
 esac
