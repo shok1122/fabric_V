@@ -2,5 +2,6 @@ crypto-config/*
 assets/*
 log/*
 channel-artifacts/*
+crypto-config
 *.yaml
 !.gitkeep
