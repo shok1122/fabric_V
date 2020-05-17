@@ -458,7 +458,7 @@ function generateChannelArtifacts() {
 
   set_time "finish_generateChannelConfig"
 
-  for list in $(yq .Profiles.OrgsOrdererGenesis.Consortiums.SampleConsortium.Organizations[].ID configtx.yaml); do
+  for list in $(yq r configtx.yaml 'Profiles.OrgsOrdererGenesis.Consortiums.SampleConsortium.Organizations[*].ID'); do
       org=$(echo $list | sed 's/^"\(.*\)"$/\1/')
       set_time "start_generateAnchorPeer_$org"
       generateAnchorPeer $org
