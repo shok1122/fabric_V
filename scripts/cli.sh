@@ -202,6 +202,22 @@ invoke()
         -c "{\"Args\":[\"$func_cc\",$args_cc]}"
 }
 
+query()
+{
+    local name_cc=$1
+    local func_cc=$2
+    local args_cc=$3
+
+    set_globals 0 000
+
+    log "peer chaincode query"
+
+    peer chaincode query \
+        -C $CHANNEL_NAME \
+        -n $name_cc \
+        -c "{\"Args\":[\"$func_cc\",$args_cc]}"
+}
+
 app()
 {
     local name_cc="$1"
@@ -213,7 +229,7 @@ app()
             invoke $name_cc 'set' "\"${3}\",\"${4}\""
             ;;
         get)
-            invoke $name_cc 'get' "\"${3}\""
+            query $name_cc 'get' "\"${3}\""
             ;;
     esac
 }
