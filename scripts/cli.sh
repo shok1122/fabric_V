@@ -180,6 +180,44 @@ chaincode()
     esac
 }
 
+invoke()
+{
+    local name_cc=$1
+    local func_cc=$2
+    local args_cc=$3
+
+    set_globals 0 000
+
+    log "peer chaincode invoke"
+
+    peer chaincode invoke \
+        -o $ORDERER \
+        --tls true \
+        --cafile $CAFILE \
+        -C $CHANNEL_NAME \
+        -n $name_cc \
+        --waitForEvent \
+        --peerAddresses $FABRIC_CORE_PEER_ADDRESS_PEER0_ORG000 \
+        --tlsRootCertFiles $FABRIC_CORE_PEER_TLS_ROOTCERT_FILE_ORG000 \
+        -c "{\"Args\":[\"$func_cc\",$args_cc]}"
+}
+
+app()
+{
+    local name_cc="$1"
+    local cmd="$2"
+
+
+    case $cmd in
+        set)
+            invoke $name_cc 'set' "\"${3}\",\"${4}\""
+            ;;
+        get)
+            invoke $name_cc 'get' "\"${3}\""
+            ;;
+    esac
+}
+
 playing()
 {
     channel create
@@ -198,6 +236,9 @@ case $CMD in
         ;;
     chaincode)
         chaincode $@
+        ;;
+    app)
+        app $@
         ;;
     playing)
         playing
