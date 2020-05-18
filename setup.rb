@@ -11,8 +11,8 @@ ERB_DOCKER_COMPOSE_BASE = 'template/docker-compose-base.yaml.erb'
 ERB_DOCKER_COMPOSE_CLI = 'template/docker-compose-cli.yaml.erb'
 ERB_CRYPTO_CONFIG = 'template/crypto-config.yaml.erb'
 ERB_CONFIGTX = 'template/configtx.yaml.erb'
-PATH_PEER_ORGS = '/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations'
-PATH_ORDERER_ORGS = '/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations'
+PATH_PEER_ORGS = '/root/crypto/peerOrganizations'
+PATH_ORDERER_ORGS = '/root/crypto/ordererOrganizations'
 
 DOMAIN = ARGV[0]
 ORG_NUM = ARGV[1].to_i
