@@ -78,9 +78,7 @@ update_anchor()
 update_anchor_all()
 {
     for org in ${ORG_NUM_LIST//,/ }; do
-        if [ "$org" != "000" ]; then
-            update_anchor 0 $org
-        fi
+        update_anchor 0 $org
     done
 }
 
@@ -118,7 +116,7 @@ install_chaincode()
     set_globals $peer $org
 
     local path_cc="$3"
-    local name_cc="$(basename $path_cc)"
+    local name_cc="$4"
 
     log "peer install chaincode"
 
@@ -128,13 +126,37 @@ install_chaincode()
 install_chaincode_all()
 {
     local path_cc="$1"
+    local name_cc="$2"
 
     for org in ${ORG_NUM_LIST//,/ }; do
         for peer in ${PEER_NUM_LIST//,/ }; do
             echo $peer $org
-            install_chaincode $peer $org $path_cc
+            install_chaincode $peer $org $path_cc $name_cc
         done
     done
+}
+
+instantiate_chaincode()
+{
+    local name_cc="$1"
+    local version_cc="$2"
+
+    local args_cc="{\"Args\":[]}"
+    local policy_cc="OR('Org000MSP.member','Org001MSP.member')"
+
+    set_globals 0 000
+
+    log "peer instantiate chaincode"
+
+    peer chaincode instantiate \
+        -o $ORDERER \
+        --tls \
+        --cafile $CAFILE \
+        -n $name_cc \
+        -C $CHANNEL_NAME \
+        -v $version_cc \
+        -c $args_cc \
+        -P $policy_cc
 }
 
 chaincode()
@@ -149,6 +171,9 @@ chaincode()
         install-all)
             install_chaincode_all $@
             ;;
+        instantiate)
+            instantiate_chaincode $@
+            ;;
         *)
             help
             ;;
@@ -159,7 +184,9 @@ playing()
 {
     channel create
     channel join-all
-    chaincode install-all github.com/chaincode/src/arithmetic-operation
+    channel update-anchor-all
+    chaincode install-all fabric-playing/arithmetic-operation arithmetic
+    chaincode instantiate arithmetic 1.0
 }
 
 CMD="$1"
