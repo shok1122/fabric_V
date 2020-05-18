@@ -228,6 +228,9 @@ app()
         set)
             invoke $name_cc 'set' "\"${3}\",\"${4}\""
             ;;
+        add)
+            invoke $name_cc 'add' "\"${3}\",\"${4}\""
+            ;;
         get)
             query $name_cc 'get' "\"${3}\""
             ;;
