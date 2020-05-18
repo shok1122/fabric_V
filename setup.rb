@@ -19,6 +19,8 @@ ORG_NUM = ARGV[1].to_i
 ENDORSER_NUM = ARGV[2].to_i
 CHANNEL_NAME = ARGV[3]
 
+SYS_CHANNEL = "sys.#{DOMAIN}"
+
 def setup_fabric(_org_num_total)
     org_num_total = _org_num_total
     File.open(ERB_DOCKER_COMPOSE_BASE) do |f|
@@ -67,6 +69,7 @@ def generate(_org_num_total, _endorser_num)
             candidate_list = "#{candidate_list},#{"%03d" % i}"
         end
         f.puts("FABRIC_ENDORSER_CANDIDATE=#{candidate_list}")
+        f.puts("FABRIC_SYS_CHANNEL_NAME=#{SYS_CHANNEL}")
         f.puts("# ------------------------------")
         f.puts("# orderer")
         f.puts("# ------------------------------")

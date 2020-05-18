@@ -32,6 +32,8 @@ export PATH=${PWD}/bin:${PWD}:$PATH
 export FABRIC_CFG_PATH=${PWD}
 export VERBOSE=false
 
+. assets/orgs.info
+
 function set_time()
 {
     local dummy
@@ -495,10 +497,10 @@ OS_ARCH=$(echo "$(uname -s | tr '[:upper:]' '[:lower:]' | sed 's/mingw64_nt.*/wi
 CLI_TIMEOUT=10
 # default for delay between commands
 CLI_DELAY=3
-# system channel name defaults to "byfn-sys-channel"
-SYS_CHANNEL="byfn-sys-channel"
+# system channel name defaults"
+SYS_CHANNEL="${FABRIC_SYS_CHANNEL_NAME}"
 # channel name defaults to "mychannel"
-CHANNEL_NAME="mychannel"
+CHANNEL_NAME="$FABRIC_CHANNEL_NAME"
 # use this as the default docker-compose yaml definition
 COMPOSE_FILE=docker-compose-cli.yaml
 #
